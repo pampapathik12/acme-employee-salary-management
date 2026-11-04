@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -26,10 +27,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee employee = new Employee();
 
+        String employeeCode = "EMP-" +
+                UUID.randomUUID().toString()
+                        .replace("-", "")
+                        .substring(0, 20)
+                        .toUpperCase();
+
+        employee.setEmployeeCode(employeeCode);
+
         employee.setFirstName(request.getFirstName());
         employee.setLastName(request.getLastName());
         employee.setEmail(request.getEmail());
         employee.setPhone(request.getPhone());
+        employee.setDepartment(request.getDepartment());
+        employee.setDesignation(request.getDesignation());
         employee.setSalary(request.getSalary());
         employee.setDateOfJoining(request.getJoiningDate());
 
@@ -49,6 +60,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setLastName(request.getLastName());
         employee.setEmail(request.getEmail());
         employee.setPhone(request.getPhone());
+        employee.setDepartment(request.getDepartment());
+        employee.setDesignation(request.getDesignation());
         employee.setSalary(request.getSalary());
         employee.setDateOfJoining(request.getJoiningDate());
 
@@ -67,7 +80,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return convertToResponse(employee);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -100,6 +112,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         response.setPhone(employee.getPhone());
         response.setSalary(employee.getSalary());
         response.setJoiningDate(employee.getDateOfJoining());
+        response.setDepartment(employee.getDepartment());
+        response.setDesignation(employee.getDesignation());
 
         return response;
     }

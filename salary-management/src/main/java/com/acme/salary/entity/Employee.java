@@ -61,6 +61,12 @@ public class Employee {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(length = 100)
+    private String department;
+
+    @Column(length = 100)
+    private String designation;
+
     public Employee() {
     }
 
@@ -166,5 +172,21 @@ public class Employee {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 }

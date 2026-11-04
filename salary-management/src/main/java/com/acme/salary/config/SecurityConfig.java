@@ -2,6 +2,10 @@ package com.acme.salary.config;
 
 import com.acme.salary.security.JwtAuthenticationFilter;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,8 +13,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -52,14 +54,26 @@ public class SecurityConfig {
                                 "/error"
                         ).permitAll()
 
-                        // Role-based access
-                        .requestMatchers("/api/employees/**").hasAnyRole("ADMIN", "HR")
-                        .requestMatchers("/api/departments/**").hasAnyRole("ADMIN", "HR")
-                        .requestMatchers("/api/designations/**").hasAnyRole("ADMIN", "HR")
-                        .requestMatchers("/api/attendance/**").hasAnyRole("ADMIN", "HR", "EMPLOYEE")
-                        .requestMatchers("/api/leaves/**").hasAnyRole("ADMIN", "HR", "EMPLOYEE")
-                        .requestMatchers("/api/payroll/**").hasAnyRole("ADMIN", "HR")
-                        .requestMatchers("/api/salaries/**").hasAnyRole("ADMIN", "HR")
+                        .requestMatchers("/api/employees/**")
+                        .hasAnyRole("ADMIN", "HR")
+
+                        .requestMatchers("/api/departments/**")
+                        .hasAnyRole("ADMIN", "HR")
+
+                        .requestMatchers("/api/designations/**")
+                        .hasAnyRole("ADMIN", "HR")
+
+                        .requestMatchers("/api/attendance/**")
+                        .hasAnyRole("ADMIN", "HR", "EMPLOYEE")
+
+                        .requestMatchers("/api/leaves/**")
+                        .hasAnyRole("ADMIN", "HR", "EMPLOYEE")
+
+                        .requestMatchers("/api/payroll/**")
+                        .hasAnyRole("ADMIN", "HR")
+
+                        .requestMatchers("/api/salaries/**")
+                        .hasAnyRole("ADMIN", "HR")
 
                         .anyRequest().authenticated()
                 )
@@ -71,14 +85,32 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public OpenAPI customOpenAPI() {
+
+        String securitySchemeName = "bearerAuth";
+
+        return new OpenAPI()
+                .components(
+                        new Components()
+                                .addSecuritySchemes(
+                                        securitySchemeName,
+                                        new SecurityScheme()
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")
+                                )
+                )
+                .addSecurityItem(
+                        new SecurityRequirement()
+                                .addList(securitySchemeName)
+                );
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration) throws Exception {
+
         return configuration.getAuthenticationManager();
     }
 }
