@@ -1,11 +1,14 @@
 package com.acme.salary.entity;
 
 import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
 @Table(name = "attendance")
+@EntityListeners(AuditingEntityListener.class)
 public class Attendance {
 
     @Id

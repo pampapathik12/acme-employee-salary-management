@@ -1,30 +1,38 @@
 package com.acme.salary.entity;
+
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @Entity
 @Table(name = "employees")
+@EntityListeners(AuditingEntityListener.class)
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "employee_id")
     private Long id;
 
-    @Column(name = "employee_code", nullable = false, unique = true, length = 20)
+    @Column(name = "employee_code", nullable = false, unique = true, length = 30)
     private String employeeCode;
 
     @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false, length = 100)
+    @Column(name = "last_name", length = 100)
     private String lastName;
 
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(length = 15)
+    @Column(length = 20)
     private String phone;
 
     @Column(name = "date_of_birth")
@@ -36,36 +44,25 @@ public class Employee {
     @Column(length = 20)
     private String gender;
 
-    @Column(length = 255)
+    @Column(columnDefinition = "TEXT")
     private String address;
 
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(precision = 12, scale = 2)
     private BigDecimal salary;
 
-    @Column(nullable = false, length = 20)
-    private String employmentStatus;
+    @Column(name = "employment_status", nullable = false, length = 20)
+    private String employmentStatus = "ACTIVE";
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
-        createdAt = now;
-        updatedAt = now;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
     public Employee() {
     }
-
 
     public Long getId() {
         return id;

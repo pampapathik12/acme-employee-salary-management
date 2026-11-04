@@ -1,10 +1,13 @@
 package com.acme.salary.entity;
 
 import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "payroll_items")
+@EntityListeners(AuditingEntityListener.class)
 public class PayrollItem {
 
     @Id

@@ -2,9 +2,11 @@
 package com.acme.salary.entity;
 
 import jakarta.persistence.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "designations")
+@EntityListeners(AuditingEntityListener.class)
 public class Designation {
 
     @Id
