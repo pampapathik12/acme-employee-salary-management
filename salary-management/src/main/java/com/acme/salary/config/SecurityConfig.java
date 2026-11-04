@@ -55,26 +55,25 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers("/api/employees/**")
-                        .hasAnyRole("ADMIN", "HR")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "HR_ADMIN", "HR_MANAGER")
 
                         .requestMatchers("/api/departments/**")
-                        .hasAnyRole("ADMIN", "HR")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "HR_ADMIN", "HR_MANAGER")
 
                         .requestMatchers("/api/designations/**")
-                        .hasAnyRole("ADMIN", "HR")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "HR_ADMIN", "HR_MANAGER")
 
                         .requestMatchers("/api/attendance/**")
-                        .hasAnyRole("ADMIN", "HR", "EMPLOYEE")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "HR_ADMIN", "HR_MANAGER", "EMPLOYEE")
 
                         .requestMatchers("/api/leaves/**")
-                        .hasAnyRole("ADMIN", "HR", "EMPLOYEE")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "HR_ADMIN", "HR_MANAGER", "EMPLOYEE")
 
                         .requestMatchers("/api/payroll/**")
-                        .hasAnyRole("ADMIN", "HR")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "PAYROLL_MANAGER", "FINANCE_MANAGER")
 
                         .requestMatchers("/api/salaries/**")
-                        .hasAnyRole("ADMIN", "HR")
-
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "HR_ADMIN", "HR_MANAGER", "PAYROLL_MANAGER", "FINANCE_MANAGER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
