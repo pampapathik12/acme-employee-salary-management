@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "payrolls")
@@ -26,6 +27,9 @@ public class Payroll {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal grossSalary;
 
+    @Column(precision = 12, scale = 2)
+    private BigDecimal basicSalary;
+
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalDeductions;
 
@@ -36,6 +40,8 @@ public class Payroll {
     private String status = "DRAFT";
 
     private LocalDateTime generatedAt;
+
+    private LocalDate paymentDate;
 
     @PrePersist
     protected void onCreate() {
@@ -55,6 +61,8 @@ public class Payroll {
 
     public BigDecimal getGrossSalary() { return grossSalary; }
     public void setGrossSalary(BigDecimal grossSalary) { this.grossSalary = grossSalary; }
+    public BigDecimal getBasicSalary() { return basicSalary; }
+    public void setBasicSalary(BigDecimal basicSalary) { this.basicSalary = basicSalary; }
 
     public BigDecimal getTotalDeductions() { return totalDeductions; }
     public void setTotalDeductions(BigDecimal totalDeductions) { this.totalDeductions = totalDeductions; }
@@ -66,4 +74,6 @@ public class Payroll {
     public void setStatus(String status) { this.status = status; }
 
     public LocalDateTime getGeneratedAt() { return generatedAt; }
+    public LocalDate getPaymentDate() { return paymentDate; }
+    public void setPaymentDate(LocalDate paymentDate) { this.paymentDate = paymentDate; }
 }

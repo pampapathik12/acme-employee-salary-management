@@ -8,10 +8,13 @@ import com.acme.salary.repository.EmployeeRepository;
 import com.acme.salary.service.AttendanceService;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class AttendanceServiceImpl implements AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
@@ -26,14 +29,17 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public EmployeeResponse markAttendance(EmployeeRequest request) {
-        throw new UnsupportedOperationException(
-                "EmployeeRequest does not contain attendance fields. AttendanceRequest is required.");
+        Attendance attendance = new Attendance();
+        apply(attendance, request, true);
+        return mapToResponse(attendanceRepository.save(attendance));
     }
 
     @Override
     public EmployeeResponse updateAttendance(Long id, EmployeeRequest request) {
-        throw new UnsupportedOperationException(
-                "EmployeeRequest does not contain attendance fields. AttendanceRequest is required.");
+        Attendance attendance = attendanceRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Attendance not found: " + id));
+        apply(attendance, request, false);
+        return mapToResponse(attendanceRepository.save(attendance));
     }
 
     @Override
@@ -79,6 +85,11 @@ public class AttendanceServiceImpl implements AttendanceService {
         EmployeeResponse response = new EmployeeResponse();
 
         response.setId(attendance.getId());
+        response.setEmployeeId(attendance.getEmployee().getId());
+        response.setAttendanceDate(attendance.getAttendanceDate());
+        response.setCheckIn(attendance.getCheckIn());
+        response.setCheckOut(attendance.getCheckOut());
+        response.setStatus(attendance.getStatus());
 
         if (attendance.getEmployee() != null) {
             response.setFirstName(attendance.getEmployee().getFirstName());
@@ -86,5 +97,20 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
 
         return response;
+    }
+
+    private void apply(Attendance attendance, EmployeeRequest request, boolean creating) {
+        if (request.getEmployeeId() != null) {
+            attendance.setEmployee(employeeRepository.findById(request.getEmployeeId())
+                    .orElseThrow(() -> new IllegalArgumentException("Employee not found: " + request.getEmployeeId())));
+        } else if (creating) {
+            throw new IllegalArgumentException("employeeId is required; attendance is recorded for an existing employee");
+        }
+        if (request.getAttendanceDate() != null) attendance.setAttendanceDate(request.getAttendanceDate());
+        else if (creating) attendance.setAttendanceDate(LocalDate.now());
+        if (request.getCheckIn() != null) attendance.setCheckIn(request.getCheckIn());
+        if (request.getCheckOut() != null) attendance.setCheckOut(request.getCheckOut());
+        if (request.getStatus() != null) attendance.setStatus(request.getStatus());
+        else if (creating) attendance.setStatus("PRESENT");
     }
 }
