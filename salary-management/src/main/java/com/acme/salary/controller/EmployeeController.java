@@ -7,11 +7,14 @@ import com.acme.salary.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/employees")
+@Tag(name = "Employees", description = "Create and manage employee records")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -20,7 +23,8 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @PostMapping
+    @PostMapping("/addEmployee")
+    @Operation(summary = "Add employee")
     public ResponseEntity<EmployeeResponse> createEmployee(
             @RequestBody EmployeeRequest request) {
 
@@ -29,7 +33,8 @@ public class EmployeeController {
                 HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateEmployee/{id}")
+    @Operation(summary = "Update employee")
     public ResponseEntity<EmployeeResponse> updateEmployee(
             @PathVariable Long id,
             @RequestBody EmployeeRequest request) {
@@ -38,7 +43,8 @@ public class EmployeeController {
                 employeeService.updateEmployee(id, request));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getEmployee/{id}")
+    @Operation(summary = "Get employee by ID")
     public ResponseEntity<EmployeeResponse> getEmployeeById(
             @PathVariable Long id) {
 
@@ -46,14 +52,16 @@ public class EmployeeController {
                 employeeService.getEmployeeById(id));
     }
 
-    @GetMapping
+    @GetMapping("/getAllEmployees")
+    @Operation(summary = "List all employees")
     public ResponseEntity<List<EmployeeResponse>> getAllEmployees() {
 
         return ResponseEntity.ok(
                 employeeService.getAllEmployees());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteEmployeeById/{id}")
+    @Operation(summary = "Delete employee")
     public ResponseEntity<Void> deleteEmployee(
             @PathVariable Long id) {
 

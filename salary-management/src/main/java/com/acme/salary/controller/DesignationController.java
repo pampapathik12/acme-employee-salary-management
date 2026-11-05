@@ -7,11 +7,14 @@ import com.acme.salary.service.DesignationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/designations")
+@Tag(name = "Designations", description = "Create and manage designations")
 public class DesignationController {
 
     private final DesignationService designationService;
@@ -20,7 +23,8 @@ public class DesignationController {
         this.designationService = designationService;
     }
 
-    @PostMapping
+    @PostMapping("/addDesignation")
+    @Operation(summary = "Add designation")
     public ResponseEntity<EmployeeResponse> createDesignation(
             @RequestBody EmployeeRequest request) {
 
@@ -29,7 +33,8 @@ public class DesignationController {
                 HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateDesignation/{id}")
+    @Operation(summary = "Update designation")
     public ResponseEntity<EmployeeResponse> updateDesignation(
             @PathVariable Long id,
             @RequestBody EmployeeRequest request) {
@@ -38,7 +43,8 @@ public class DesignationController {
                 designationService.updateDesignation(id, request));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getDesignation/{id}")
+    @Operation(summary = "Get designation by ID")
     public ResponseEntity<EmployeeResponse> getDesignationById(
             @PathVariable Long id) {
 
@@ -46,14 +52,16 @@ public class DesignationController {
                 designationService.getDesignationById(id));
     }
 
-    @GetMapping
+    @GetMapping("/getAllDesignations")
+    @Operation(summary = "List all designations")
     public ResponseEntity<List<EmployeeResponse>> getAllDesignations() {
 
         return ResponseEntity.ok(
                 designationService.getAllDesignations());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteDesignationById/{id}")
+    @Operation(summary = "Delete designation")
     public ResponseEntity<Void> deleteDesignation(
             @PathVariable Long id) {
 

@@ -7,11 +7,14 @@ import com.acme.salary.service.AttendanceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/attendance")
+@Tag(name = "Attendance", description = "Record and manage employee attendance")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
@@ -20,7 +23,8 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
     }
 
-    @PostMapping
+    @PostMapping("/markAttendance")
+    @Operation(summary = "Mark attendance")
     public ResponseEntity<EmployeeResponse> markAttendance(
             @RequestBody EmployeeRequest request) {
 
@@ -29,7 +33,8 @@ public class AttendanceController {
                 HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateAttendance/{id}")
+    @Operation(summary = "Update attendance")
     public ResponseEntity<EmployeeResponse> updateAttendance(
             @PathVariable Long id,
             @RequestBody EmployeeRequest request) {
@@ -38,7 +43,8 @@ public class AttendanceController {
                 attendanceService.updateAttendance(id, request));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getAttendance/{id}")
+    @Operation(summary = "Get attendance by ID")
     public ResponseEntity<EmployeeResponse> getAttendanceById(
             @PathVariable Long id) {
 
@@ -46,14 +52,16 @@ public class AttendanceController {
                 attendanceService.getAttendanceById(id));
     }
 
-    @GetMapping
+    @GetMapping("/getAllAttendance")
+    @Operation(summary = "List all attendance records")
     public ResponseEntity<List<EmployeeResponse>> getAllAttendance() {
 
         return ResponseEntity.ok(
                 attendanceService.getAllAttendance());
     }
 
-    @GetMapping("/employee/{employeeId}")
+    @GetMapping("/getAttendanceByEmployeeId/{employeeId}")
+    @Operation(summary = "List attendance for employee")
     public ResponseEntity<List<EmployeeResponse>> getAttendanceByEmployeeId(
             @PathVariable Long employeeId) {
 
@@ -61,7 +69,8 @@ public class AttendanceController {
                 attendanceService.getAttendanceByEmployeeId(employeeId));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteAttendanceById/{id}")
+    @Operation(summary = "Delete attendance record")
     public ResponseEntity<Void> deleteAttendance(
             @PathVariable Long id) {
 

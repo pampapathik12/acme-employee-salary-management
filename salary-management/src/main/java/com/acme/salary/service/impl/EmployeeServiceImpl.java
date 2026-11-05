@@ -106,6 +106,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         EmployeeResponse response = new EmployeeResponse();
 
         response.setId(employee.getId());
+        response.setEmployeeId(employee.getId());
+        response.setEmployeeCode(employee.getEmployeeCode());
         response.setFirstName(employee.getFirstName());
         response.setLastName(employee.getLastName());
         response.setEmail(employee.getEmail());

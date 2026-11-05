@@ -7,11 +7,14 @@ import com.acme.salary.service.DepartmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/departments")
+@Tag(name = "Departments", description = "Create and manage departments")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
@@ -20,7 +23,8 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-    @PostMapping
+    @PostMapping("/addDepartment")
+    @Operation(summary = "Add department")
     public ResponseEntity<EmployeeResponse> createDepartment(
             @RequestBody EmployeeRequest request) {
 
@@ -29,7 +33,8 @@ public class DepartmentController {
                 HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateDepartment/{id}")
+    @Operation(summary = "Update department")
     public ResponseEntity<EmployeeResponse> updateDepartment(
             @PathVariable Long id,
             @RequestBody EmployeeRequest request) {
@@ -38,7 +43,8 @@ public class DepartmentController {
                 departmentService.updateDepartment(id, request));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getDepartment/{id}")
+    @Operation(summary = "Get department by ID")
     public ResponseEntity<EmployeeResponse> getDepartmentById(
             @PathVariable Long id) {
 
@@ -46,14 +52,16 @@ public class DepartmentController {
                 departmentService.getDepartmentById(id));
     }
 
-    @GetMapping
+    @GetMapping("/getAllDepartments")
+    @Operation(summary = "List all departments")
     public ResponseEntity<List<EmployeeResponse>> getAllDepartments() {
 
         return ResponseEntity.ok(
                 departmentService.getAllDepartments());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteDepartmentById/{id}")
+    @Operation(summary = "Delete department")
     public ResponseEntity<Void> deleteDepartment(
             @PathVariable Long id) {
 

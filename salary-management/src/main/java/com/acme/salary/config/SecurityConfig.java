@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/health",
-                                "/api/auth/**",
+                                "/api/auth/login",
                                 "/error"
                         ).permitAll()
 
@@ -70,6 +70,9 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN", "SUPER_ADMIN", "HR_ADMIN", "HR_MANAGER", "EMPLOYEE")
 
                         .requestMatchers("/api/payroll/**")
+                        .hasAnyRole("ADMIN", "SUPER_ADMIN", "PAYROLL_MANAGER", "FINANCE_MANAGER")
+
+                        .requestMatchers("/api/payroll-periods/**")
                         .hasAnyRole("ADMIN", "SUPER_ADMIN", "PAYROLL_MANAGER", "FINANCE_MANAGER")
 
                         .requestMatchers("/api/salaries/**")

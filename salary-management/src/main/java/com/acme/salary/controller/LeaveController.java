@@ -7,11 +7,14 @@ import com.acme.salary.service.LeaveService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/leaves")
+@Tag(name = "Leaves", description = "Submit and manage employee leave requests")
 public class LeaveController {
 
     private final LeaveService leaveService;
@@ -20,7 +23,8 @@ public class LeaveController {
         this.leaveService = leaveService;
     }
 
-    @PostMapping
+    @PostMapping("/applyLeave")
+    @Operation(summary = "Apply for leave")
     public ResponseEntity<EmployeeResponse> applyLeave(
             @RequestBody EmployeeRequest request) {
 
@@ -29,7 +33,8 @@ public class LeaveController {
                 HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateLeave/{id}")
+    @Operation(summary = "Update leave request")
     public ResponseEntity<EmployeeResponse> updateLeave(
             @PathVariable Long id,
             @RequestBody EmployeeRequest request) {
@@ -38,7 +43,8 @@ public class LeaveController {
                 leaveService.updateLeave(id, request));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getLeave/{id}")
+    @Operation(summary = "Get leave request by ID")
     public ResponseEntity<EmployeeResponse> getLeaveById(
             @PathVariable Long id) {
 
@@ -46,14 +52,16 @@ public class LeaveController {
                 leaveService.getLeaveById(id));
     }
 
-    @GetMapping
+    @GetMapping("/getAllLeaves")
+    @Operation(summary = "List all leave requests")
     public ResponseEntity<List<EmployeeResponse>> getAllLeaves() {
 
         return ResponseEntity.ok(
                 leaveService.getAllLeaves());
     }
 
-    @GetMapping("/employee/{employeeId}")
+    @GetMapping("/getLeavesByEmployeeId/{employeeId}")
+    @Operation(summary = "List leave requests for employee")
     public ResponseEntity<List<EmployeeResponse>> getLeavesByEmployeeId(
             @PathVariable Long employeeId) {
 
@@ -61,7 +69,8 @@ public class LeaveController {
                 leaveService.getLeavesByEmployeeId(employeeId));
     }
 
-    @PutMapping("/{id}/approve")
+    @PutMapping("/approveLeave/{id}")
+    @Operation(summary = "Approve leave request")
     public ResponseEntity<EmployeeResponse> approveLeave(
             @PathVariable Long id,
             @RequestParam Long approvedBy) {
@@ -70,7 +79,8 @@ public class LeaveController {
                 leaveService.approveLeave(id, approvedBy));
     }
 
-    @PutMapping("/{id}/reject")
+    @PutMapping("/rejectLeave/{id}")
+    @Operation(summary = "Reject leave request")
     public ResponseEntity<EmployeeResponse> rejectLeave(
             @PathVariable Long id,
             @RequestParam Long approvedBy) {
@@ -79,7 +89,8 @@ public class LeaveController {
                 leaveService.rejectLeave(id, approvedBy));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteLeaveById/{id}")
+    @Operation(summary = "Delete leave request")
     public ResponseEntity<Void> deleteLeave(
             @PathVariable Long id) {
 

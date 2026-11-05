@@ -9,6 +9,7 @@ import java.time.LocalTime;
 public class EmployeeResponse {
 
     private Long id;
+    private String employeeCode;
     private String firstName;
     private String lastName;
     private String email;
@@ -35,6 +36,14 @@ public class EmployeeResponse {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getEmployeeCode() {
+        return employeeCode;
+    }
+
+    public void setEmployeeCode(String employeeCode) {
+        this.employeeCode = employeeCode;
     }
 
     public String getFirstName() {

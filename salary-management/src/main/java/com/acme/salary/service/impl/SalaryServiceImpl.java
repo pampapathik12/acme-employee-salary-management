@@ -66,11 +66,14 @@ public class SalaryServiceImpl implements SalaryService {
         if (request.getSalaryComponentId() != null)
             return componentRepository.findById(request.getSalaryComponentId())
                     .orElseThrow(() -> new IllegalArgumentException("Salary component not found: " + request.getSalaryComponentId()));
-        if (request.getComponentName() == null || request.getComponentName().isBlank())
-            throw new IllegalArgumentException("salaryComponentId or componentName is required");
-        return componentRepository.findByComponentName(request.getComponentName()).orElseGet(() -> {
+        // The simple salary form submits employeeId and salary only. Treat that
+        // as the employee's base salary, while still honoring explicit components.
+        String componentName = request.getComponentName();
+        if (componentName == null || componentName.isBlank()) componentName = "BASIC";
+        final String resolvedComponentName = componentName;
+        return componentRepository.findByComponentName(resolvedComponentName).orElseGet(() -> {
             SalaryComponent created = new SalaryComponent();
-            created.setComponentName(request.getComponentName());
+            created.setComponentName(resolvedComponentName);
             created.setComponentType(request.getComponentType() == null ? "BASIC" : request.getComponentType());
             created.setActive(true);
             return componentRepository.save(created);

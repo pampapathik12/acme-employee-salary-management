@@ -6,6 +6,7 @@ import com.acme.salary.entity.User;
 import com.acme.salary.repository.UserRepository;
 import com.acme.salary.service.AuthService;
 import com.acme.salary.security.JwtService;
+import com.acme.salary.security.TokenBlacklist;
 
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -18,15 +19,18 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final TokenBlacklist tokenBlacklist;
 
     public AuthServiceImpl(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            JwtService jwtService,
+            TokenBlacklist tokenBlacklist) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.tokenBlacklist = tokenBlacklist;
     }
 
     @Override
@@ -67,5 +71,10 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 role
         );
+    }
+
+    @Override
+    public void logout(String token) {
+        tokenBlacklist.revoke(token, jwtService.extractExpiration(token));
     }
 }
