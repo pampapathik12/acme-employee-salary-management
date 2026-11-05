@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
 
@@ -73,20 +74,20 @@ public class LeaveController {
     @Operation(summary = "Approve leave request")
     public ResponseEntity<EmployeeResponse> approveLeave(
             @PathVariable Long id,
-            @RequestParam Long approvedBy) {
+            @AuthenticationPrincipal String authenticatedEmail) {
 
         return ResponseEntity.ok(
-                leaveService.approveLeave(id, approvedBy));
+                leaveService.approveLeave(id, authenticatedEmail));
     }
 
     @PutMapping("/rejectLeave/{id}")
     @Operation(summary = "Reject leave request")
     public ResponseEntity<EmployeeResponse> rejectLeave(
             @PathVariable Long id,
-            @RequestParam Long approvedBy) {
+            @AuthenticationPrincipal String authenticatedEmail) {
 
         return ResponseEntity.ok(
-                leaveService.rejectLeave(id, approvedBy));
+                leaveService.rejectLeave(id, authenticatedEmail));
     }
 
     @DeleteMapping("/deleteLeaveById/{id}")

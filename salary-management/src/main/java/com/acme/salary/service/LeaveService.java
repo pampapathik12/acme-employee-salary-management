@@ -17,9 +17,9 @@ public interface LeaveService {
 
     List<EmployeeResponse> getLeavesByEmployeeId(Long employeeId);
 
-    EmployeeResponse approveLeave(Long id, Long approvedBy);
+    EmployeeResponse approveLeave(Long id, String authenticatedEmail);
 
-    EmployeeResponse rejectLeave(Long id, Long approvedBy);
+    EmployeeResponse rejectLeave(Long id, String authenticatedEmail);
 
     void deleteLeave(Long id);
 

@@ -7,6 +7,7 @@ import com.acme.salary.entity.LeaveRequest;
 import com.acme.salary.repository.EmployeeRepository;
 import com.acme.salary.repository.LeaveRequestRepository;
 import com.acme.salary.repository.LeaveTypeRepository;
+import com.acme.salary.repository.UserRepository;
 import com.acme.salary.service.LeaveService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +19,14 @@ public class LeaveServiceImpl implements LeaveService {
     private final LeaveRequestRepository leaveRepository;
     private final EmployeeRepository employeeRepository;
     private final LeaveTypeRepository leaveTypeRepository;
+    private final UserRepository userRepository;
 
     public LeaveServiceImpl(LeaveRequestRepository leaveRepository, EmployeeRepository employeeRepository,
-                            LeaveTypeRepository leaveTypeRepository) {
+                            LeaveTypeRepository leaveTypeRepository, UserRepository userRepository) {
         this.leaveRepository = leaveRepository;
         this.employeeRepository = employeeRepository;
         this.leaveTypeRepository = leaveTypeRepository;
+        this.userRepository = userRepository;
     }
 
     @Override public EmployeeResponse applyLeave(EmployeeRequest request) {
@@ -41,14 +44,17 @@ public class LeaveServiceImpl implements LeaveService {
     @Override @Transactional(readOnly = true) public List<EmployeeResponse> getLeavesByEmployeeId(Long employeeId) {
         return leaveRepository.findByEmployeeId(employeeId).stream().map(this::map).toList();
     }
-    @Override public EmployeeResponse approveLeave(Long id, Long approvedBy) { return decide(id, approvedBy, "APPROVED"); }
-    @Override public EmployeeResponse rejectLeave(Long id, Long approvedBy) { return decide(id, approvedBy, "REJECTED"); }
+    @Override public EmployeeResponse approveLeave(Long id, String authenticatedEmail) { return decide(id, authenticatedEmail, "APPROVED"); }
+    @Override public EmployeeResponse rejectLeave(Long id, String authenticatedEmail) { return decide(id, authenticatedEmail, "REJECTED"); }
     @Override public void deleteLeave(Long id) { leaveRepository.delete(find(id)); }
 
-    private EmployeeResponse decide(Long id, Long approverId, String status) {
+    private EmployeeResponse decide(Long id, String authenticatedEmail, String status) {
         LeaveRequest leave = find(id);
-        Employee approver = employeeRepository.findById(approverId)
-                .orElseThrow(() -> new IllegalArgumentException("Approver employee not found: " + approverId));
+        if (authenticatedEmail == null || authenticatedEmail.isBlank()) {
+            throw new IllegalArgumentException("An authenticated user is required to decide a leave request.");
+        }
+        var approver = userRepository.findByEmail(authenticatedEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Authenticated user account was not found."));
         leave.setApprovedBy(approver); leave.setStatus(status);
         return map(leaveRepository.save(leave));
     }

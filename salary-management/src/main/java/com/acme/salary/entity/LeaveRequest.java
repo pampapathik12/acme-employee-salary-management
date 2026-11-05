@@ -20,8 +20,8 @@ public class LeaveRequest {
     private Employee employee;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approved_by_employee_id")
-    private Employee approvedBy;
+    @JoinColumn(name = "approved_by_user_id")
+    private User approvedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leave_type_id", nullable = false)
@@ -50,8 +50,8 @@ public class LeaveRequest {
 
     public Employee getEmployee() { return employee; }
     public void setEmployee(Employee employee) { this.employee = employee; }
-    public Employee getApprovedBy() { return approvedBy; }
-    public void setApprovedBy(Employee approvedBy) { this.approvedBy = approvedBy; }
+    public User getApprovedBy() { return approvedBy; }
+    public void setApprovedBy(User approvedBy) { this.approvedBy = approvedBy; }
 
     public LeaveType getLeaveType() { return leaveType; }
     public void setLeaveType(LeaveType leaveType) { this.leaveType = leaveType; }
